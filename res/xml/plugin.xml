@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<uexplugins>
+     <plugin
+        className="org.zywx.wbpalmstar.plugin.uexdownloadermgr.EUExDownloaderMgr"
+        uexName="uexDownloaderMgr" >
+        <method name="createDownloader" />
+        <method name="download" />
+        <method name="closeDownloader" />
+        <method name="getInfo" />
+        <method name="clearTask" />
+        <method name="cancelDownload" />
+        <method name="setHeaders"/>
+    </plugin>
+</uexplugins>
