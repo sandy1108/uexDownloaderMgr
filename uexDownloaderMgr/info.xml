@@ -1,10 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <uexplugins>
     <plugin
-        uexName="uexDownloaderMgr" version="3.0.6" build="6">
-		<info>6:新增setHeaders接口</info>
-		<build>5:引擎更新后，修复取消下载提示不准确的问题</build>
-		<build>4:修复下载速度慢的问题，修复取消下载提示不准确问题</build>
+        uexName="uexDownloaderMgr" version="3.0.7" build="7">
+        <info>7:修复不支持HTTPS问题</info>
+        <build>6:新增setHeaders接口</build>
+        <build>5:引擎更新后，修复取消下载提示不准确的问题</build>
+        <build>4:修复下载速度慢的问题，修复取消下载提示不准确问题</build>
         <build>3:新增接口cancelDownload</build>
         <build>2:修复下载速度的问题</build>
         <build>1:修复下载完成之后，无法打开，文件不存在的问题</build>

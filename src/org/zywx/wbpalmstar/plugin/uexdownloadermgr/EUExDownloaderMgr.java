@@ -15,10 +15,6 @@ import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.params.HttpClientParams;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.params.BasicHttpParams;
-import org.apache.http.params.HttpConnectionParams;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.zywx.wbpalmstar.base.BUtility;
@@ -26,6 +22,7 @@ import org.zywx.wbpalmstar.base.ResoureFinder;
 import org.zywx.wbpalmstar.engine.EBrowserView;
 import org.zywx.wbpalmstar.engine.universalex.EUExBase;
 import org.zywx.wbpalmstar.engine.universalex.EUExCallback;
+import org.zywx.wbpalmstar.platform.certificates.Http;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -52,6 +49,9 @@ public class EUExDownloaderMgr extends EUExBase {
 	private HashMap<Integer, DownLoadAsyncTask> m_objectMap;
 	private HashMap<String, String> url_objectMap, headersMap;
 	Context m_context;
+	private String mCertPassword = "";
+	private String mCertPath = "";
+	private boolean mHasCert = false;
 
 	public EUExDownloaderMgr(Context context, EBrowserView view) {
 		super(context, view);
@@ -342,12 +342,16 @@ public class EUExDownloaderMgr extends EUExBase {
 			try {
 				op = params[3];
 				request = new HttpGet(params[0]);
-				BasicHttpParams bparams = new BasicHttpParams();
-				HttpConnectionParams.setConnectionTimeout(bparams, 60 * 1000);
-				HttpConnectionParams.setSoTimeout(bparams, 60 * 1000);
-				HttpConnectionParams.setSocketBufferSize(bparams, 8 * 1024);
-				HttpClientParams.setRedirecting(bparams, true);
-				httpClient = new DefaultHttpClient(bparams);
+				if (params[0].startsWith(BUtility.F_HTTP_PATH)) {
+					httpClient = Http.getHttpClient(60 * 1000);
+				} else {
+					if (mHasCert) {
+						httpClient = Http.getHttpsClientWithCert(mCertPassword,
+								mCertPath, 60 * 1000, mContext);
+					} else {
+						httpClient = Http.getHttpsClient(60 * 1000);
+					}
+				}
 				String cookie = getCookie(params[0]);
 				if (cookie != null && cookie.length() != 0) {
 					request.setHeader("Cookie", cookie);
