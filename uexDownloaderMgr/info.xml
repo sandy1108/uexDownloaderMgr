@@ -1,8 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <uexplugins>
     <plugin
-        uexName="uexDownloaderMgr" version="3.0.7" build="7">
-        <info>7:修复不支持HTTPS问题</info>
+        uexName="uexDownloaderMgr" version="3.0.8" build="8">
+        <info>8:https下载时可以支持预置证书；增大下载缓冲区；支持中文url</info>
+        <build>7:修复不支持HTTPS问题</build>
         <build>6:新增setHeaders接口</build>
         <build>5:引擎更新后，修复取消下载提示不准确的问题</build>
         <build>4:修复下载速度慢的问题，修复取消下载提示不准确问题</build>
