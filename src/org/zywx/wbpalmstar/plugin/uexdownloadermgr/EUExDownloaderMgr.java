@@ -22,20 +22,15 @@ import org.zywx.wbpalmstar.base.ResoureFinder;
 import org.zywx.wbpalmstar.engine.EBrowserView;
 import org.zywx.wbpalmstar.engine.universalex.EUExBase;
 import org.zywx.wbpalmstar.engine.universalex.EUExCallback;
-import org.zywx.wbpalmstar.engine.universalex.EUExUtil;
 import org.zywx.wbpalmstar.platform.certificates.Http;
-import org.zywx.wbpalmstar.widgetone.dataservice.WWidgetData;
 
 import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.net.Uri;
 import android.os.AsyncTask;
-import android.text.TextUtils;
 import android.text.format.Time;
-import android.util.Log;
 
 public class EUExDownloaderMgr extends EUExBase {
 
@@ -136,7 +131,7 @@ public class EUExDownloaderMgr extends EUExBase {
 		if (!BUtility.isNumeric(inOpCode)) {
 			return;
 		}
-		checkAppStatus(mContext, mBrwView.getRootWidget().m_appId);
+
 		if (m_objectMap.containsKey(Integer.parseInt(inOpCode))) {
 			jsCallback(F_CALLBACK_NAME_CREATEDOWNLOADER,
 					Integer.parseInt(inOpCode), EUExCallback.F_C_INT,
@@ -173,10 +168,7 @@ public class EUExDownloaderMgr extends EUExBase {
 		String inOpCode = parm[0], inDLUrl = parm[1], inSavePath = parm[2], inMode = parm[3];
 		
 		url_objectMap.put(inDLUrl, inOpCode);
-		inDLUrl = Uri.encode(inDLUrl, "/?:=&#@+$");// 防止中文无法下载问题，转换除了常用ASCII字符以外的字符
-		if (TextUtils.isEmpty(inDLUrl)) {
-			inDLUrl = parm[1];
-		}
+		
 		if (!BUtility.isNumeric(inOpCode)) {
 			return;
 		}
@@ -348,22 +340,14 @@ public class EUExDownloaderMgr extends EUExBase {
 		@Override
 		protected String doInBackground(String... params) {
 			try {
-				Thread.currentThread().setPriority(Thread.MIN_PRIORITY);
 				op = params[3];
 				request = new HttpGet(params[0]);
 				if (params[0].startsWith(BUtility.F_HTTP_PATH)) {
 					httpClient = Http.getHttpClient(60 * 1000);
 				} else {
-					// https
 					if (mHasCert) {
-						// 存在预置证书
-						String certPath = "file:///android_asset/widget/wgtRes/clientCertificate.p12";
-						WWidgetData wd = mBrwView.getRootWidget();
-						String appId = wd.m_appId;
-						String cPassWord = EUExUtil.getCertificatePsw(mContext,
-								appId);
-						httpClient = Http.getHttpsClientWithCert(cPassWord,
-								certPath, 60 * 1000, mContext);
+						httpClient = Http.getHttpsClientWithCert(mCertPassword,
+								mCertPath, 60 * 1000, mContext);
 					} else {
 						httpClient = Http.getHttpsClient(60 * 1000);
 					}
@@ -431,7 +415,7 @@ public class EUExDownloaderMgr extends EUExBase {
 
 					bis = new BufferedInputStream(response.getEntity()
 							.getContent());
-					byte buf[] = new byte[64 * 1024];
+					byte buf[] = new byte[8*1024];
 					while (!isCancelled()) {
 						// 循环读取
 						int numread = bis.read(buf);
@@ -587,24 +571,4 @@ public class EUExDownloaderMgr extends EUExBase {
 		}
 	}
 	
-	private void checkAppStatus(Context inActivity, String appId) {
-		try {
-			String appstatus = ResoureFinder.getInstance().getString(
-					inActivity, "appstatus");
-			byte[] appstatusToByte = PEncryption.HexStringToBinary(appstatus);
-			String appstatusDecrypt = new String(PEncryption.os_decrypt(
-					appstatusToByte, appstatusToByte.length, appId));
-			String[] appstatuss = appstatusDecrypt.split(",");
-			if (appstatuss == null || appstatuss.length == 0) {
-				return;
-			}
-			if ("1".equals(appstatuss[8])) {
-				Log.i(tag, "isCertificate: true");
-				mHasCert = true;
-			}
-		} catch (Exception e) {
-			Log.w(tag, e.getMessage(), e);
-		}
-
-	}
 }
