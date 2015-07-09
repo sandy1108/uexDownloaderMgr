@@ -340,8 +340,12 @@ public class EUExDownloaderMgr extends EUExBase {
 		
 		@Override
 		protected void onCancelled() {
-			if(!op.isEmpty() && !isError) {
-				cbToJs(Integer.parseInt(op), fileSize, "0", EUExCallback.F_C_CB_CancelDownLoad);
+			try {
+				if(!op.isEmpty() && !isError) {
+					cbToJs(Integer.parseInt(op), fileSize, "0", EUExCallback.F_C_CB_CancelDownLoad);
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
 		}
 		
@@ -547,15 +551,19 @@ public class EUExDownloaderMgr extends EUExBase {
 
 	@Override
 	protected boolean clean() {
-		Iterator<Integer> iterator = m_objectMap.keySet().iterator();
-		while (iterator.hasNext()) {
-			DownLoadAsyncTask object = m_objectMap.get(iterator.next());
-			if (object != null) {
-				object.cancel(true);
-				object = null;
+		try {
+			Iterator<Integer> iterator = m_objectMap.keySet().iterator();
+			while (iterator.hasNext()) {
+				DownLoadAsyncTask object = m_objectMap.get(iterator.next());
+				if (object != null) {
+					object.cancel(true);
+					object = null;
+				}
 			}
+			m_objectMap.clear();
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
-		m_objectMap.clear();
 		if (m_database != null) {
 			m_database.close();
 			m_databaseHelper.close();
