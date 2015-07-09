@@ -2,7 +2,7 @@
 <uexplugins>
     <plugin
         uexName="uexDownloaderMgr" version="3.0.8" build="8">
-        <info>8:https下载时可以支持预置证书；增大下载缓冲区；支持中文url</info>
+        <info>8:https下载时可以支持预置证书；增大下载缓冲区；支持中文url;增强稳定性</info>
         <build>7:修复不支持HTTPS问题</build>
         <build>6:新增setHeaders接口</build>
         <build>5:引擎更新后，修复取消下载提示不准确的问题</build>
