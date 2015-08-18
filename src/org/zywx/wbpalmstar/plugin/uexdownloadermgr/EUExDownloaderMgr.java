@@ -633,16 +633,6 @@ public class EUExDownloaderMgr extends EUExBase {
 	}
 
 	/**
-	 * 添加app验证Header
-	 * 
-	 * @param curWData
-	 */
-	private void setAppVerifyHeader(WWidgetData curWData) {
-		headersMap.put(KEY_APPVERIFY,
-				getAppVerifyValue(curWData, System.currentTimeMillis()));
-	};
-
-	/**
 	 * 添加验证头
 	 * 
 	 * @param curWData
