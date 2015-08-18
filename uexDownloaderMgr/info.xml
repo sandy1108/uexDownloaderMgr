@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <uexplugins>
     <plugin
-        uexName="uexDownloaderMgr" version="3.0.8.1" build="9">
+        uexName="uexDownloaderMgr" version="3.0.9" build="9">
         <info>9:增加appVerify校验头</info>
         <build>8:https下载时可以支持预置证书；增大下载缓冲区；支持中文url;增强稳定性</build>
         <build>7:修复不支持HTTPS问题</build>
