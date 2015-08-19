@@ -4,6 +4,8 @@ import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -26,6 +28,7 @@ import org.zywx.wbpalmstar.engine.universalex.EUExUtil;
 import org.zywx.wbpalmstar.platform.certificates.Http;
 import org.zywx.wbpalmstar.widgetone.dataservice.WWidgetData;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
@@ -38,6 +41,8 @@ import android.text.format.Time;
 import android.util.Log;
 
 public class EUExDownloaderMgr extends EUExBase {
+
+	public final static String KEY_APPVERIFY = "appverify";
 
 	public static final String tag = "uexDownloaderMgr_";
 	private static final String F_CALLBACK_NAME_DOWNLOADPERCENT = "uexDownloaderMgr.onStatus";
@@ -58,12 +63,15 @@ public class EUExDownloaderMgr extends EUExBase {
 	private String mCertPath = "";
 	private boolean mHasCert = false;
 
+	private WWidgetData mCurWData;
+
 	public EUExDownloaderMgr(Context context, EBrowserView view) {
 		super(context, view);
 		m_objectMap = new HashMap<Integer, EUExDownloaderMgr.DownLoadAsyncTask>();
 		url_objectMap = new HashMap<String, String>();
 		headersMap = new HashMap<String, String>();
 		m_context = context;
+		mCurWData = view.getCurrentWidget();
 	}
 
 	private void creatTaskTable() {
@@ -376,6 +384,14 @@ public class EUExDownloaderMgr extends EUExBase {
 				if (cookie != null && cookie.length() != 0) {
 					request.setHeader("Cookie", cookie);
 				}
+
+				if (null != mCurWData) {
+					request.setHeader(
+							KEY_APPVERIFY,
+							getAppVerifyValue(mCurWData,
+									System.currentTimeMillis()));
+				}
+
 				addHeaders();
 				File file = new File(params[1]);
 				if (!file.getParentFile().exists()) {
@@ -614,5 +630,47 @@ public class EUExDownloaderMgr extends EUExBase {
 			Log.w(tag, e.getMessage(), e);
 		}
 
+	}
+
+	/**
+	 * 添加验证头
+	 * 
+	 * @param curWData
+	 *            当前widgetData
+	 * @param timeStamp
+	 *            当前时间戳
+	 * @return
+	 */
+	private String getAppVerifyValue(WWidgetData curWData, long timeStamp) {
+		String value = null;
+		String md5 = getMD5Code(curWData.m_appId + ":" + curWData.m_appkey
+				+ ":" + timeStamp);
+		value = "md5=" + md5 + ";ts=" + timeStamp;
+		return value;
+
+	}
+
+	private String getMD5Code(String value) {
+		if (value == null) {
+			value = "";
+		}
+		try {
+			MessageDigest md = MessageDigest.getInstance("MD5");
+			md.reset();
+			md.update(value.getBytes());
+			byte[] md5Bytes = md.digest();
+			StringBuffer hexValue = new StringBuffer();
+			for (int i = 0; i < md5Bytes.length; i++) {
+				int val = ((int) md5Bytes[i]) & 0xff;
+				if (val < 16)
+					hexValue.append("0");
+				hexValue.append(Integer.toHexString(val));
+			}
+			return hexValue.toString();
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+		}
+
+		return null;
 	}
 }
