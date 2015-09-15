@@ -43,7 +43,7 @@ import android.util.Log;
 public class EUExDownloaderMgr extends EUExBase {
 
 	public final static String KEY_APPVERIFY = "appverify";
-
+	public final static String XMAS_APPID = "x-mas-app-id";
 	public static final String tag = "uexDownloaderMgr_";
 	private static final String F_CALLBACK_NAME_DOWNLOADPERCENT = "uexDownloaderMgr.onStatus";
 	private static final String F_CALLBACK_NAME_CREATEDOWNLOADER = "uexDownloaderMgr.cbCreateDownloader";
@@ -71,7 +71,7 @@ public class EUExDownloaderMgr extends EUExBase {
 		url_objectMap = new HashMap<String, String>();
 		headersMap = new HashMap<String, String>();
 		m_context = context;
-		mCurWData = view.getCurrentWidget();
+		mCurWData = getWidgetData(view);
 	}
 
 	private void creatTaskTable() {
@@ -385,14 +385,15 @@ public class EUExDownloaderMgr extends EUExBase {
 					request.setHeader("Cookie", cookie);
 				}
 
+				addHeaders();
 				if (null != mCurWData) {
 					request.setHeader(
 							KEY_APPVERIFY,
 							getAppVerifyValue(mCurWData,
 									System.currentTimeMillis()));
+					request.setHeader(XMAS_APPID,mCurWData.m_appId);
 				}
 
-				addHeaders();
 				File file = new File(params[1]);
 				if (!file.getParentFile().exists()) {
 					file.getParentFile().mkdirs();
@@ -672,5 +673,19 @@ public class EUExDownloaderMgr extends EUExBase {
 		}
 
 		return null;
+	}
+	/**
+	 * plugin里面的子应用的appId和appkey都按照主应用为准
+	 */
+	private WWidgetData getWidgetData(EBrowserView view){
+		WWidgetData widgetData = view.getCurrentWidget();
+		String indexUrl=widgetData.m_indexUrl;
+		Log.i("uexDownloaderMgr", "m_indexUrl:"+indexUrl);
+		if(widgetData.m_wgtType!=0){
+			if(indexUrl.contains("widget/plugin")){
+				return view.getRootWidget();
+			}
+		}
+		return widgetData;
 	}
 }
