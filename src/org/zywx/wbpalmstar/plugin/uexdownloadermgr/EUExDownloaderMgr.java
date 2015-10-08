@@ -303,11 +303,11 @@ public class EUExDownloaderMgr extends EUExBase {
 	}
 
     public void cancelDownload(String[] parm) {
-    	if(parm.length != 2) {
-    		return;
-    	}
-    	String dlUrl = parm[0];
-    	
+        if (parm.length < 1){
+            return;
+        }
+        String dlUrl = parm[0];
+
     	String inOpCode = url_objectMap.get(dlUrl);
     	if (!BUtility.isNumeric(inOpCode)) {
 			return;
@@ -317,19 +317,20 @@ public class EUExDownloaderMgr extends EUExBase {
 		if (dlTask != null) {
 			dlTask.cancel(true);
 			dlTask = null;
-
 		}
-    	if("1".equals(parm[1])) {
-			String[] res = selectTaskFromDB(dlUrl);
-			if (res != null && res[1] != null) {
-				File file = new File(res[0]);
-				if (file.exists()) {
-					file.delete();
-				}
-			}
-		
-    	}
-    	deleteTaskFromDB(dlUrl);
+        if (parm.length >1){
+            if("1".equals(parm[1])) {
+                String[] res = selectTaskFromDB(dlUrl);
+                if (res != null && res[1] != null) {
+                    File file = new File(res[0]);
+                    if (file.exists()) {
+                        file.delete();
+                    }
+                }
+                deleteTaskFromDB(dlUrl);
+            }
+        }
+
     	url_objectMap.clear();
     }
 
