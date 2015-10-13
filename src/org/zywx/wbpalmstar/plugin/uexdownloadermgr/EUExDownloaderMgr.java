@@ -7,6 +7,7 @@ import java.io.RandomAccessFile;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.DecimalFormat;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -19,6 +20,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.zywx.wbpalmstar.base.BDebug;
 import org.zywx.wbpalmstar.base.BUtility;
 import org.zywx.wbpalmstar.base.ResoureFinder;
 import org.zywx.wbpalmstar.engine.EBrowserView;
@@ -155,8 +157,8 @@ public class EUExDownloaderMgr extends EUExBase {
 		DownLoadAsyncTask dlTask = new DownLoadAsyncTask();
 		m_objectMap.put(Integer.parseInt(inOpCode), dlTask);
 		jsCallback(F_CALLBACK_NAME_CREATEDOWNLOADER,
-				Integer.parseInt(inOpCode), EUExCallback.F_C_INT,
-				EUExCallback.F_C_SUCCESS);
+                Integer.parseInt(inOpCode), EUExCallback.F_C_INT,
+                EUExCallback.F_C_SUCCESS);
 	}
 
 	/**
@@ -396,6 +398,8 @@ public class EUExDownloaderMgr extends EUExBase {
 				}
 
 				File file = new File(params[1]);
+                BDebug.i("appcan", "params: "+Arrays.toString(params));
+                BDebug.i("appcan","file path: "+params[1]);
 				if (!file.getParentFile().exists()) {
 					file.getParentFile().mkdirs();
 				}
@@ -408,6 +412,7 @@ public class EUExDownloaderMgr extends EUExBase {
 						long fileSize = Long.valueOf(res[1]);
 						if (fileSize != 0 && fileSize == downLoaderSise) {
 							// 若文件存在并且文件大小等于数据库中实际的文件大小，则认为文件已经下载完成
+                            BDebug.i("appcan","file already exist... "+params[1]);
 							cbToJs(Integer.parseInt(params[3]), fileSize, "100", EUExCallback.F_C_FinishDownLoad);
 							return null;
 						}
@@ -469,6 +474,7 @@ public class EUExDownloaderMgr extends EUExBase {
 						// 为了使下载速度加快，取消休眠代码，以目前手机平台的处理速度，此代码用处暂时可以认为只有坏处没有好处。
 					}
 					if(fileSize <= downLoaderSise ) {
+                        BDebug.i("appcan","path: "+params[0]+" "+fileSize);
 						cbToJs(Integer.parseInt(params[3]), fileSize, "100", EUExCallback.F_C_FinishDownLoad);
 					}
 				} else {
