@@ -78,7 +78,7 @@ public class EUExDownloaderMgr extends EUExBase {
 		if (m_databaseHelper != null) {
 			return;
 		}
-		m_databaseHelper = new DatabaseHelper(mContext, "piugin_downloadermgr_downloader.db", 1);
+		m_databaseHelper = new DatabaseHelper(mContext, "plugin_downloadermgr_downloader.db", 1);
 		m_database = m_databaseHelper.getReadableDatabase();
 		m_database.execSQL(F_CREATETABLE_SQL);
 	}
