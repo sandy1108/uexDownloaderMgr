@@ -52,8 +52,8 @@ public class EUExDownloaderMgr extends EUExBase {
 	public final static int F_STATE_CREATE_DOWNLOADER = 0;
 	public final static int F_STATE_DOWNLOADING = 1;
 	public static final String F_CREATETABLE_SQL = "CREATE TABLE IF  NOT EXISTS Downloader(_id INTEGER PRIMARY KEY,url TEXT,filePath TEXT,fileSize TEXT,downSize TEXT,time TEXT)";
-	DatabaseHelper m_databaseHelper = null;
-	SQLiteDatabase m_database = null;
+	private DatabaseHelper m_databaseHelper = null;
+	private SQLiteDatabase m_database = null;
 	static final String SCRIPT_HEADER = "javascript:";
 
 	private HashMap<Integer, DownLoadAsyncTask> m_objectMap;
@@ -78,7 +78,7 @@ public class EUExDownloaderMgr extends EUExBase {
 		if (m_databaseHelper != null) {
 			return;
 		}
-		m_databaseHelper = new DatabaseHelper(mContext, "Downloader.db", 1);
+		m_databaseHelper = new DatabaseHelper(mContext, "plugin_downloadermgr_downloader.db", 1);
 		m_database = m_databaseHelper.getReadableDatabase();
 		m_database.execSQL(F_CREATETABLE_SQL);
 	}
