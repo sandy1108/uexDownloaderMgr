@@ -28,13 +28,11 @@ import org.zywx.wbpalmstar.engine.universalex.EUExUtil;
 import org.zywx.wbpalmstar.platform.certificates.Http;
 import org.zywx.wbpalmstar.widgetone.dataservice.WWidgetData;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.text.TextUtils;
 import android.text.format.Time;
@@ -64,6 +62,7 @@ public class EUExDownloaderMgr extends EUExBase {
     private boolean mHasCert = false;
 
     private WWidgetData mCurWData;
+    private String lastPercent = "";
 
     public EUExDownloaderMgr(Context context, EBrowserView view) {
         super(context, view);
@@ -213,7 +212,12 @@ public class EUExDownloaderMgr extends EUExBase {
                 + F_CALLBACK_NAME_DOWNLOADPERCENT + "){"
                 + F_CALLBACK_NAME_DOWNLOADPERCENT + "("
                 + inOpCode + "," + fileSize + "," + percent + "," + status + ")}";
-        onCallback(js);
+        if((!percent.equals(lastPercent))
+                || (EUExCallback.F_C_DownLoading != status))
+            {
+                lastPercent = percent;
+                onCallback(js);
+            }
     }
 
     public void closeDownloader(String[] parm) {
