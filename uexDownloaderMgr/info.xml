@@ -1,7 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <uexplugins>
     <plugin
-        uexName="uexDownloaderMgr" version="3.0.14" build="14">
+        uexName="uexDownloaderMgr" version="3.0.15" build="15">
+        <info>15:处理重定向</info>
         <info>14:修复下载过程中下载进度过快导致应用异常的问题。</info>
         <build>13:修复有些url被encode不能下载的问题</build>
         <build>12:修复下载过程中崩溃的问题（由于与其他插件使用的数据库同名造成的）。</build>

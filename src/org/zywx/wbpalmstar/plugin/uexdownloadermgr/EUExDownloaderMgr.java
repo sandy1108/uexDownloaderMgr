@@ -1,5 +1,31 @@
 package org.zywx.wbpalmstar.plugin.uexdownloadermgr;
 
+import android.content.Context;
+import android.database.Cursor;
+import android.database.SQLException;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
+import android.os.AsyncTask;
+import android.text.TextUtils;
+import android.text.format.Time;
+import android.util.Log;
+
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.params.ClientPNames;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.zywx.wbpalmstar.base.BUtility;
+import org.zywx.wbpalmstar.base.ResoureFinder;
+import org.zywx.wbpalmstar.engine.EBrowserView;
+import org.zywx.wbpalmstar.engine.universalex.EUExBase;
+import org.zywx.wbpalmstar.engine.universalex.EUExCallback;
+import org.zywx.wbpalmstar.engine.universalex.EUExUtil;
+import org.zywx.wbpalmstar.platform.certificates.Http;
+import org.zywx.wbpalmstar.widgetone.dataservice.WWidgetData;
+
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
@@ -12,31 +38,6 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.zywx.wbpalmstar.base.BUtility;
-import org.zywx.wbpalmstar.base.ResoureFinder;
-import org.zywx.wbpalmstar.engine.EBrowserView;
-import org.zywx.wbpalmstar.engine.universalex.EUExBase;
-import org.zywx.wbpalmstar.engine.universalex.EUExCallback;
-import org.zywx.wbpalmstar.engine.universalex.EUExUtil;
-import org.zywx.wbpalmstar.platform.certificates.Http;
-import org.zywx.wbpalmstar.widgetone.dataservice.WWidgetData;
-
-import android.content.Context;
-import android.database.Cursor;
-import android.database.SQLException;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
-import android.os.AsyncTask;
-import android.text.TextUtils;
-import android.text.format.Time;
-import android.util.Log;
 
 public class EUExDownloaderMgr extends EUExBase {
 
@@ -373,6 +374,7 @@ public class EUExDownloaderMgr extends EUExBase {
                         httpClient = Http.getHttpsClient(60 * 1000);
                     }
                 }
+                httpClient.getParams().setParameter(ClientPNames.HANDLE_REDIRECTS,true);//自动处理重定向
                 String cookie = getCookie(params[0]);
                 if (cookie != null && cookie.length() != 0) {
                     request.setHeader("Cookie", cookie);
