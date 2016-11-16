@@ -108,19 +108,24 @@ var cInt = 2;
 	function clearInfo(){
 		uexDownloaderMgr.clearTask(document.getElementById('downloadPath').value,"1");
 	}
+	function cancelDownload(){
+	    var path = document.getElementById('downloadPath').value;
+	    uexDownloaderMgr.cancelDownload(path,1);
+	}
 		</script>
   </head>
 <body class="um-vp " ontouchstart>
 	<div class="conbor">
 		<div class="consj">
 			<span>下载地址：</span>
-			<input class="textbox" id="downloadPath" type="text" value="http://pic.pp3.cn/uploads//20121001j/bz/210.jpg" >
+			<input class="textbox" id="downloadPath" type="text" value="http://fs.appcan.cn/uploads/2015/10/08//11451308_android_00.00.0000_000_87263_0.apk" >
 			<span>保存地址：</span>
-			<input class="textbox" id="savedPath" type="text" value="wgt://data/down/1284565196.jpg" >
+			<input class="textbox" id="savedPath" type="text" value="wgt://data/down/a.apk" >
 			<input  class="btn" type="button" value="下载文件" onclick="download();">
 			<span>文件下载状态</span>
 			<div class="tcxx" id="percentage"></div>
 			<span>结束下载</span>
+            <input  class="btn" type="button" value="取消下载" onclick="cancelDownload();">
 			<input  class="btn" type="button" value="结束下载" onclick="closeDownload();">	
 			<span>得到下载信息</span>
 			<input  class="btn" type="button" value="得到下载信息" onclick="getInfo();">	
