@@ -64,6 +64,7 @@ public class EUExDownloaderMgr extends EUExBase {
 
     private WWidgetData mCurWData;
     private String lastPercent = "";
+    private long mLastTime=0;
 
     public EUExDownloaderMgr(Context context, EBrowserView view) {
         super(context, view);
@@ -209,13 +210,15 @@ public class EUExDownloaderMgr extends EUExBase {
     }
 
     private void cbToJs(int inOpCode, Long fileSize, String percent, int status) {
+        long currentTime=System.currentTimeMillis();
         String js = SCRIPT_HEADER + "if("
                 + F_CALLBACK_NAME_DOWNLOADPERCENT + "){"
                 + F_CALLBACK_NAME_DOWNLOADPERCENT + "("
                 + inOpCode + "," + fileSize + "," + percent + "," + status + ")}";
-        if((!percent.equals(lastPercent))
+        if((!percent.equals(lastPercent)&&currentTime-mLastTime>500)
                 || (EUExCallback.F_C_DownLoading != status))
             {
+                mLastTime=currentTime;
                 lastPercent = percent;
                 onCallback(js);
             }
