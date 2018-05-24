@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <uexplugins>
     <plugin
-        uexName="uexDownloaderMgr" version="3.0.16" build="16">
+        uexName="uexDownloaderMgr" version="3.0.16.1" build="2018052401">
         <info>16:修复回调过快卡死的问题</info>
         <build>15:处理重定向</build>
         <info>14:修复下载过程中下载进度过快导致应用异常的问题。</info>

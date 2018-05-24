@@ -17,6 +17,15 @@
  *
  */
 
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:2.2.2'
+    }
+}
+
 apply plugin: 'com.android.application'
 
 dependencies {
@@ -26,7 +35,7 @@ dependencies {
 
 android {
     compileSdkVersion 21
-    buildToolsVersion "23.0.0"
+    buildToolsVersion "23.0.2"
     defaultConfig {
         // 应用的包名
         applicationId "org.zywx.wbpalmstar.widgetone.uexDownloaderMgr"
@@ -57,6 +66,11 @@ android {
         release.setRoot('build-types/release')
     }
     productFlavors {
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_6
+        targetCompatibility JavaVersion.VERSION_1_6
     }
 }
 
