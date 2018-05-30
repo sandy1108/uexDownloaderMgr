@@ -330,7 +330,7 @@ public class EUExDownloaderMgr extends EUExBase {
         url_objectMap.clear();
     }
 
-    private class DownLoadAsyncTask extends AsyncTask<String, Integer, String> {
+    private class DownLoadAsyncTask extends AsyncTask<String, Integer, Boolean> {
         HttpGet request = null;
         HttpClient httpClient = null;
         BufferedInputStream bis = null;
@@ -355,7 +355,7 @@ public class EUExDownloaderMgr extends EUExBase {
         }
 
         @Override
-        protected String doInBackground(String... params) {
+        protected Boolean doInBackground(String... params) {
             try {
                 Thread.currentThread().setPriority(Thread.MIN_PRIORITY);
                 op = params[3];
@@ -405,8 +405,9 @@ public class EUExDownloaderMgr extends EUExBase {
                         long fileSize = Long.valueOf(res[1]);
                         if (fileSize != 0 && fileSize == downLoaderSise) {
                             // 若文件存在并且文件大小等于数据库中实际的文件大小，则认为文件已经下载完成
-                            cbToJs(Integer.parseInt(params[3]), fileSize, "100", EUExCallback.F_C_FinishDownLoad);
-                            return null;
+                            // 统一在onPost里回调
+//                            cbToJs(Integer.parseInt(params[3]), fileSize, "100", EUExCallback.F_C_FinishDownLoad);
+                            return true;
                         }
                     }
                     // res为空说明已经点清除了下载信息，需要重新下
@@ -466,7 +467,8 @@ public class EUExDownloaderMgr extends EUExBase {
                         // 为了使下载速度加快，取消休眠代码，以目前手机平台的处理速度，此代码用处暂时可以认为只有坏处没有好处。
                     }
                     if (fileSize <= downLoaderSise) {
-                        cbToJs(Integer.parseInt(params[3]), fileSize, "100", EUExCallback.F_C_FinishDownLoad);
+                        //统一在onPost里回调
+//                        cbToJs(Integer.parseInt(params[3]), fileSize, "100", EUExCallback.F_C_FinishDownLoad);
                     }
                 } else {
                     isError = true;
@@ -511,6 +513,23 @@ public class EUExDownloaderMgr extends EUExBase {
             }
         }
 
+        /**
+         * <p>Runs on the UI thread after {@link #doInBackground}. The
+         * specified result is the value returned by {@link #doInBackground}.</p>
+         * <p>
+         * <p>This method won't be invoked if the task was cancelled.</p>
+         *
+         * @param b The result of the operation computed by {@link #doInBackground}.
+         * @see #onPreExecute
+         * @see #doInBackground
+         * @see #onCancelled(Object)
+         */
+        @Override
+        protected void onPostExecute(Boolean b) {
+            if (!isError && b) {
+                cbToJs(Integer.parseInt(op), fileSize, "100", EUExCallback.F_C_FinishDownLoad);
+            }
+        }
     }
 
     private class DownloadPercentage {
